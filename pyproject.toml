@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rl"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["Adrián Tormos Llorente <adriantormos98@gmail.com>"]
 
