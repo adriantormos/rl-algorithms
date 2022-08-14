@@ -10,8 +10,7 @@ from rl.policy import RLPolicy
 
 
 class DQN:
-    def __init__(self, estimator, policy: RLPolicy, optimizer, dataset: ReplayBuffer,
-                 double_dqn: bool = False):
+    def __init__(self, estimator, policy: RLPolicy, optimizer, dataset: ReplayBuffer):
         self.estimator = estimator
         self.estimator2 = copy.deepcopy(self.estimator)
         self.policy = policy
@@ -19,7 +18,6 @@ class DQN:
         self.environment = None
         self.dataset = dataset
         self.optimizer = optimizer
-        self.double_dqn = double_dqn
 
     def _compute_targets(self, transition_batch: TransitionBatch, gamma: float):
         action_dim, transition_dim = 0, 1
