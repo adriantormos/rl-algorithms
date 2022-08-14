@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "rl-algorithms"
+name = "rl"
 version = "0.1.0"
 description = ""
 authors = ["Adrián Tormos Llorente <adriantormos98@gmail.com>"]
