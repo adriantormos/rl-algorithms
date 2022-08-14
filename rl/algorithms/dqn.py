@@ -21,6 +21,17 @@ class DQN:
         self.optimizer = optimizer
         self.double_dqn = double_dqn
 
+    def _compute_targets(self, transition_batch: TransitionBatch, gamma: float):
+        action_dim, transition_dim = 0, 1
+
+        q_value_estimations_next_state: torch.Tensor = \
+            self.estimator2(transition_batch.next_state).max(transition_dim).values
+        return torch.where(
+            transition_batch.done,
+            transition_batch.reward,
+            transition_batch.reward + gamma * q_value_estimations_next_state
+        )
+
     def train(self, environment: RLEnvironment,
               gamma: float = 0.99, n_episodes: int = 1000, update_rate: int = 50,
               device: torch.device = torch.device('cpu'),
@@ -60,24 +71,7 @@ class DQN:
                 transition_batch: Optional[TransitionBatch] = self.dataset.sample()
                 if transition_batch is not None:
                     action_dim, transition_dim = 0, 1
-
-                    # Estimate targets
-                    if self.double_dqn:
-                        q_value_estimations_next_state: torch.Tensor = \
-                            self.estimator2(transition_batch.next_state).gather(
-                                transition_dim,
-                                self.estimator(transition_batch.next_state)
-                                    .max(transition_dim).indices.unsqueeze(transition_dim)
-                            ).squeeze()
-                    else:
-                        q_value_estimations_next_state: torch.Tensor = \
-                            self.estimator2(transition_batch.next_state).max(transition_dim).values
-
-                    reward_estimates = torch.where(
-                        transition_batch.done,
-                        transition_batch.reward,
-                        transition_batch.reward + gamma * q_value_estimations_next_state
-                    )
+                    reward_estimates = self._compute_targets(transition_batch, gamma)
 
                     # Estimate Q-values of transition states
                     q_value_estimations = self.estimator(transition_batch.state).gather(
@@ -112,3 +106,20 @@ class DQN:
             return self.estimator, all_episodes_rewards
         else:
             return self.estimator
+
+
+class DoubleDQN(DQN):
+    def _compute_targets(self, transition_batch: TransitionBatch, gamma: float):
+        action_dim, transition_dim = 0, 1
+
+        q_value_estimations_next_state: torch.Tensor = \
+            self.estimator2(transition_batch.next_state).gather(
+                transition_dim,
+                self.estimator(transition_batch.next_state)
+                .max(transition_dim).indices.unsqueeze(transition_dim)
+            ).squeeze()
+        return torch.where(
+            transition_batch.done,
+            transition_batch.reward,
+            transition_batch.reward + gamma * q_value_estimations_next_state
+        )
