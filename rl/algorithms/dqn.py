@@ -97,8 +97,8 @@ class DQN:
                 this_episode_rewards = []
 
             if verbose and (episode_i + 1) % 100 == 0:
-                print(f'Episode {episode_i+1}/{n_episodes}')
-                print(f'Avg reward 50 last episodes: {sum(all_episodes_rewards[-50:]) / 50}')
+                print(f'Episode {episode_i+1}/{n_episodes}. '
+                      f'Last 50 eps. reward: {sum(all_episodes_rewards[-50:]) / 50:.2f}')
 
         if return_metrics:
             return self.estimator, all_episodes_rewards
