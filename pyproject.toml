@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "rl-algorithms"
+version = "0.1.0"
+description = ""
+authors = ["Adrián Tormos Llorente <adriantormos98@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+torch = "^1.12.1"
+gym = "^0.25.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
