@@ -24,7 +24,7 @@ class ReplayBuffer:
             action=torch.tensor(transition_batch.action),
             reward=torch.tensor(transition_batch.reward),
             next_state=torch.stack(transition_batch.next_state),
-            done=torch.tensor(transition_batch.done),
+            done=torch.tensor(transition_batch.done, dtype=torch.bool),
         )
         return transition_batch
 
